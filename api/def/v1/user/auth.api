@@ -1,0 +1,16 @@
+type JwtTokenRequest {
+	UserId string `json:"userId" validate:"min=1,max=64"`
+}
+
+type JwtTokenResponse {
+	AccessToken  string `json:"access_token"`
+	AccessExpire int64  `json:"access_expire"`
+	RefreshAfter int64  `json:"refresh_after"` // 建议客户端刷新token的绝对时间
+}
+
+service api {
+	@handler JwtHandler
+	post /user/token(JwtTokenRequest) returns (JwtTokenResponse)
+}
+
+

@@ -1,0 +1,8 @@
+import "v1/user/user.api"
+import "v1/user/auth.api"
+
+info(
+	author: "WqyJh"
+	email: "781345688@qq.com"
+	desc:   "APIs"
+)
