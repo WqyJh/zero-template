@@ -1,16 +1,27 @@
-type JwtTokenRequest {
-	UserId string `json:"userId" validate:"min=1,max=64"`
+import "v1/user/common.api"
+
+type JwtTokenReq {
+	UserId int64 `json:"userId" validate:"min=1,max=64"`
 }
 
-type JwtTokenResponse {
-	AccessToken  string `json:"access_token"`
-	AccessExpire int64  `json:"access_expire"`
-	RefreshAfter int64  `json:"refresh_after"` // 建议客户端刷新token的绝对时间
+type JwtTokenReply {
+	Jwt Jwt `json:"token"`
 }
 
+@server(
+	group: auth
+    prefix: /api/v1/auth
+)
 service api {
-	@handler JwtHandler
-	post /user/token(JwtTokenRequest) returns (JwtTokenResponse)
+    // JwtToken godoc
+    // @Summary      获取 Jwt Token
+    // @Description  获取 Jwt Token
+    // @Tags         auth
+    // @Accept       json
+    // @Produce      json
+    // @Param        req   body      types.JwtTokenReq  true  "请求体"
+    // @Success      200    {object}   types.DataResponse{data=types.JwtTokenReply}
+    // @Router       /api/v1/auth/token [post]
+	@handler JwtToken
+	post /token(JwtTokenReq) returns (JwtTokenReply)
 }
-
-

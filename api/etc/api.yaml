@@ -1,6 +1,30 @@
 Name: api
+Mode: dev
 Host: 0.0.0.0
 Port: 8888
+Timeout: 0
+Verbose: false
+
+Log:
+  Level: debug
+  Mode: console
+  Encoding: plain
+
+Prometheus:
+  Host: 0.0.0.0
+  Port: 11111
+  Path: /metrics
+
+HealthPath: /health
+
 JwtAuth:
   AccessSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   AccessExpire: 604800
+
+Doc:
+  Enable: true
+  Url: /docs # /docs/index.html
+  File: docs/swagger.json
+
+Mysql:
+  Source: user:pass@tcp(localhost:3306)/zero_template?parseTime=true

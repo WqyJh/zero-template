@@ -1,0 +1,219 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "description": "API仅当 HTTP Status 为 200 OK 时访问成功，访问成功时的响应格式为 {\\\"code\\\":200, \\\"msg\\\":\\\"\\\", \\\"data\\\":{}}, code 为 200 表示业务请求成功，此时可以访问 data 字段（如果 API 本身没有响应，那么 data 字段不存在）；code 不为 200 表示业务请求失败，此时没有 data 字段。<br/><br/>\nAPI 应当包含以下请求头\n<ul>\n<li> client: 客户端类型 android/ios/web </li>\n</ul>",
+        "title": "API文档",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/v1/auth/token": {
+            "post": {
+                "description": "获取 Jwt Token",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "获取 Jwt Token",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/types.JwtTokenReq"
+                            }
+                        }
+                    },
+                    "description": "请求体",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/types.DataResponse"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "$ref": "#/components/schemas/types.JwtTokenReply"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/self": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查询用户信息",
+                "tags": [
+                    "user"
+                ],
+                "summary": "查询用户信息",
+                "parameters": [
+                    {
+                        "description": "当前设备类型: android/ios",
+                        "name": "client",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "客户端版本号：整数",
+                        "name": "cversion",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "设备ID",
+                        "name": "mid",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/types.DataResponse"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "$ref": "#/components/schemas/types.UserSelfReply"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "description": "用户端API Key",
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
+            }
+        },
+        "schemas": {
+            "types.DataResponse": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "description": "200 成功；其他为错误码",
+                        "type": "integer"
+                    },
+                    "data": {},
+                    "msg": {
+                        "type": "string"
+                    }
+                }
+            },
+            "types.Jwt": {
+                "type": "object",
+                "properties": {
+                    "accessExpire": {
+                        "description": "token 过期时间: unix timestamp seconds",
+                        "type": "integer"
+                    },
+                    "accessToken": {
+                        "description": "授权码，放在 HTTP 请求的 Authorization: Bearer <accessToken> 中标识用户身份",
+                        "type": "string"
+                    },
+                    "refreshAfter": {
+                        "description": "建议客户端刷新token的绝对时间: unix timestamp seconds",
+                        "type": "integer"
+                    }
+                }
+            },
+            "types.JwtTokenReply": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "$ref": "#/components/schemas/types.Jwt"
+                    }
+                }
+            },
+            "types.JwtTokenReq": {
+                "type": "object",
+                "properties": {
+                    "userId": {
+                        "type": "string",
+                        "maxLength": 64,
+                        "minLength": 1
+                    }
+                }
+            },
+            "types.User": {
+                "type": "object",
+                "properties": {
+                    "avatar": {
+                        "description": "用户头像链接",
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "description": "创建时间: unix timestamp milliseconds",
+                        "type": "integer"
+                    },
+                    "gender": {
+                        "description": "性别 0:unknown 1:male 2:female",
+                        "type": "integer"
+                    },
+                    "nickname": {
+                        "description": "用户昵称",
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "description": "更新时间: unix timestamp milliseconds",
+                        "type": "integer"
+                    },
+                    "userId": {
+                        "description": "用户ID",
+                        "type": "integer"
+                    }
+                }
+            },
+            "types.UserSelfReply": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/types.User"
+                    }
+                }
+            }
+        }
+    }
+}

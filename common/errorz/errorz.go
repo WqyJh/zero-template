@@ -1,5 +1,7 @@
 package errorz
 
+import "net/http"
+
 const defaultCode = 1001
 
 type CodeError struct {
@@ -14,6 +16,10 @@ type CodeErrorResponse struct {
 
 func NewCodeError(code int, msg string) error {
 	return &CodeError{Code: code, Msg: msg}
+}
+
+func NewHttpError(code int) error {
+	return &CodeError{Code: code, Msg: http.StatusText(code)}
 }
 
 func NewDefaultError(msg string) error {

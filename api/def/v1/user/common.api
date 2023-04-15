@@ -1,0 +1,40 @@
+
+type CodeResponse struct {
+	Code int    `json:"code"` // 200 成功；其他为错误码
+	Msg  string `json:"msg"`
+}
+
+type DataResponse struct {
+	Code int    `json:"code"` // 200 成功；其他为错误码
+	Msg  string `json:"msg"`
+    Data interface{} `json:"data,omitempty"`
+}
+
+type Datetime {
+    CreatedAt int64 `json:"createdAt"` // 创建时间: unix timestamp milliseconds
+    UpdatedAt int64 `json:"updatedAt"` // 更新时间: unix timestamp milliseconds
+}
+
+type Jwt {
+	AccessToken  string `json:"accessToken"`   // 授权码，放在 HTTP 请求的 Authorization: Bearer <accessToken> 中标识用户身份
+	AccessExpire int64  `json:"accessExpire"` // token 过期时间: unix timestamp seconds
+	RefreshAfter int64  `json:"refreshAfter"` // 建议客户端刷新token的绝对时间: unix timestamp seconds
+}
+
+type UserPublic {
+    UserId int64 `json:"userId"` // 用户ID
+	Nickname string `json:"nickname"` // 用户昵称
+    Avatar string `json:"avatar"` // 用户头像链接
+    Datetime
+}
+
+type User {
+    UserPublic
+    Gender int `json:"gender"` // 性别 0:unknown 1:male 2:female
+}
+
+type CommonHeader {
+    Client string `header:"client" validate:"oneof=android ios web" swaggerignore:"true"` // 客户端类型: ios/android/web
+	ClientVersion int64 `header:"cversion" validate:"min=1" swaggerignore:"true"` // 客户端版本号，正整数
+	DeviceId string `header:"mid" validate:"min=1,max=64" swaggerignore:"true"` // 设备ID
+}

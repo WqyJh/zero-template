@@ -4,6 +4,8 @@ package handler
 import (
 	"net/http"
 
+	auth "zero-template/api/internal/handler/auth"
+	user "zero-template/api/internal/handler/user"
 	"zero-template/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -14,20 +16,22 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/user/info",
-				Handler: GetUserHandler(serverCtx),
+				Path:    "/self",
+				Handler: user.UserSelfHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
+		rest.WithPrefix("/api/v1/user"),
 	)
 
 	server.AddRoutes(
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/user/token",
-				Handler: JwtHandler(serverCtx),
+				Path:    "/token",
+				Handler: auth.JwtTokenHandler(serverCtx),
 			},
 		},
+		rest.WithPrefix("/api/v1/auth"),
 	)
 }
